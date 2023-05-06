@@ -9,10 +9,11 @@ namespace AK8MI_SVRCEK
         public static ResultInformation GetResults()
         {
             ResultInformation ri = new ResultInformation();
-            for(int i = 0; i < 30; i++)
+
+            for (int i = 0; i < 30; i++)
             {
-                ri.DJ1_Dim10.Add(RSDJ1(10000, 10, new Interval(-5,5)));
-                ri.DJ1_Dim5.Add(RSDJ1(10000, 5, new Interval(-5,5)));
+                ri.DJ1_Dim10.Add(RSDJ1(10000, 10, new Interval(-5, 5)));
+                ri.DJ1_Dim5.Add(RSDJ1(10000, 5, new Interval(-5, 5)));
 
                 ri.DJ2_Dim10.Add(RSDJ2(10000, 10, new Interval(-5, 5)));
                 ri.DJ2_Dim5.Add(RSDJ2(10000, 5, new Interval(-5, 5)));
@@ -64,11 +65,13 @@ namespace AK8MI_SVRCEK
                         throw new Exception("Zadaná špatná hodnota");
                 }
 
+
                 if(tempCost < costbest)
                 {
                     costbest = tempCost;
                     bestArgs = args;
                 }
+                Console.WriteLine(costbest);
             }
             return costbest;
         }

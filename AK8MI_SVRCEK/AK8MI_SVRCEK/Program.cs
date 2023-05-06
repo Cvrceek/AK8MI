@@ -8,6 +8,7 @@ namespace AK8MI_SVRCEK
         {
             Console.WriteLine("Start");
             var x = RandomSearch.GetResults();
+            var z = SimulatedAnnealing.GetResults();
             Console.WriteLine("end");
             Console.ReadLine();
         }
