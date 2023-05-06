@@ -9,16 +9,16 @@ namespace AK8MI_SVRCEK
         public static ResultInformation GetResults()
         {
             ResultInformation ri = new ResultInformation();
-            for(int i = 0; i<30; i++)
+            for(int i = 0; i < 30; i++)
             {
                 ri.DJ1_Dim10.Add(RSDJ1(10000, 10, new Interval(-5,5)));
-                ri.DJ1_Dim5.Add(RSDJ1(10, 5, new Interval(-5,5)));
+                ri.DJ1_Dim5.Add(RSDJ1(10000, 5, new Interval(-5,5)));
 
-                ri.DJ2_Dim10.Add(RSDJ2(10, 10, new Interval(-5, 5)));
-                ri.DJ2_Dim5.Add(RSDJ2(10, 5, new Interval(-5, 5)));
+                ri.DJ2_Dim10.Add(RSDJ2(10000, 10, new Interval(-5, 5)));
+                ri.DJ2_Dim5.Add(RSDJ2(10000, 5, new Interval(-5, 5)));
 
-                ri.Schwefel_Dim10.Add(RSSchwefel(10, 10, new Interval(-500, 500)));
-                ri.Schwefel_Dim5.Add(RSSchwefel(10, 5, new Interval(-500, 500)));
+                ri.Schwefel_Dim10.Add(RSSchwefel(10000, 10, new Interval(-500, 500)));
+                ri.Schwefel_Dim5.Add(RSSchwefel(10000, 5, new Interval(-500, 500)));
             }
             return ri;
         }
@@ -26,9 +26,9 @@ namespace AK8MI_SVRCEK
   
 
 
-        private static double RSDJ1(int iteration, int dimension, Interval interval) => RS(iteration, dimension, interval, 1);
-        private static double RSDJ2(int iteration, int dimension, Interval interval) => RS(iteration, dimension, interval, 2);
-        private static double RSSchwefel(int iteration, int dimension, Interval interval) => RS(iteration, dimension, interval, 3);
+        private static double RSDJ1(int FES, int dimension, Interval interval) => RS(FES, dimension, interval, 1);
+        private static double RSDJ2(int FES, int dimension, Interval interval) => RS(FES, dimension, interval, 2);
+        private static double RSSchwefel(int FES, int dimension, Interval interval) => RS(FES, dimension, interval, 3);
 
 
         private static double RS(int iteration, int dimension, Interval interval, int function)
