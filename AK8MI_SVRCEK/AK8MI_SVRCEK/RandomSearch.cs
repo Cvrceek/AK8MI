@@ -27,13 +27,15 @@ namespace AK8MI_SVRCEK
   
 
 
-        private static double RSDJ1(int FES, int dimension, Interval interval) => RS(FES, dimension, interval, 1);
-        private static double RSDJ2(int FES, int dimension, Interval interval) => RS(FES, dimension, interval, 2);
-        private static double RSSchwefel(int FES, int dimension, Interval interval) => RS(FES, dimension, interval, 3);
+        private static Result RSDJ1(int FES, int dimension, Interval interval) => RS(FES, dimension, interval, 1);
+        private static Result RSDJ2(int FES, int dimension, Interval interval) => RS(FES, dimension, interval, 2);
+        private static Result RSSchwefel(int FES, int dimension, Interval interval) => RS(FES, dimension, interval, 3);
 
 
-        private static double RS(int iteration, int dimension, Interval interval, int function)
+        private static Result RS(int iteration, int dimension, Interval interval, int function)
         {
+            Result retRst = new Result();
+
             double costbest = double.MaxValue;
             List<double> bestArgs = new List<double>();
             Random random = new Random(Helper.GetSeed());
@@ -65,15 +67,20 @@ namespace AK8MI_SVRCEK
                         throw new Exception("Zadaná špatná hodnota");
                 }
 
+                retRst.AllCosts.Add(tempCost);
 
-                if(tempCost < costbest)
+                if (tempCost < costbest)
                 {
                     costbest = tempCost;
                     bestArgs = args;
                 }
-                Console.WriteLine(costbest);
+                retRst.AllBestCosts.Add(costbest);
+
+                //Console.WriteLine(costbest);
             }
-            return costbest;
+            retRst.BestCost = costbest;
+            retRst.BestArgs = bestArgs;
+            return retRst;
         }
     }
 }

@@ -27,15 +27,16 @@ namespace AK8MI_SVRCEK
 
 
 
-        private static double SADJ1(int FES, int dimension, Interval interval) => SA(FES, 10, dimension, interval, 1);
-        private static double SADJ2(int FES, int dimension, Interval interval) => SA(FES, 10, dimension, interval, 2);
-        private static double SASchwefel(int FES, int dimension, Interval interval) => SA(FES,10, dimension, interval, 3);
+        private static Result SADJ1(int FES, int dimension, Interval interval) => SA(FES, 10, dimension, interval, 1);
+        private static Result SADJ2(int FES, int dimension, Interval interval) => SA(FES, 10, dimension, interval, 2);
+        private static Result SASchwefel(int FES, int dimension, Interval interval) => SA(FES,10, dimension, interval, 3);
 
 
 
 
-        private static double SA(int FES, int metropoliseIteration, int dimension, Interval interval, int function, double minT = 0.01, double maxT = 1000, double decr = 0.98)
+        private static Result SA(int FES, int metropoliseIteration, int dimension, Interval interval, int function, double minT = 0.01, double maxT = 1000, double decr = 0.98)
         {
+            Result retRst = new Result();
             int actualFES = 0;
             double actualTemperature = maxT;
             List<double> vector = StartVector(dimension, interval);
@@ -51,7 +52,7 @@ namespace AK8MI_SVRCEK
                     var tempCost = GetCost(tempVector, function);
                     actualFES++;
                     double deltaCost = tempCost - cost;
-
+                    retRst.AllCosts.Add(tempCost);
                     if (deltaCost < 0)
                     {
                         vector = tempVector;
@@ -65,13 +66,16 @@ namespace AK8MI_SVRCEK
                             cost = tempCost;
                         }
                     }
+                    retRst.AllBestCosts.Add(cost);
                 }
                 //zvyšování skrz přednáška, kde nt ze zvedáá
                 metropoliseIteration++;
                 //decr * T prednaska
                 actualTemperature = actualTemperature * decr;
             }
-            return cost;
+            retRst.BestArgs = vector;
+            retRst.BestCost = cost;
+            return retRst;
         }
 
 
