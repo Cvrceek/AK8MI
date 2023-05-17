@@ -67,7 +67,7 @@ namespace AK8MI_SVRCEK
                 var graf = new PlotModel();
                 graf.Legends.Add(legend);
                 graf.IsLegendVisible = true;
-                graf.Title = names[alg];
+                graf.Title = algName + "_" + names[alg];
 
 
                 var colors = typeof(OxyColors).GetFields();
@@ -111,7 +111,7 @@ namespace AK8MI_SVRCEK
                 var graf_AVG = new PlotModel();
                 graf_AVG.Legends.Add(legend_AVG);
                 graf_AVG.IsLegendVisible = true;
-                graf_AVG.Title = names[alg] + "_AVG";
+                graf_AVG.Title = algName + "_" + names[alg] + "_AVG";
 
 
                 var resultdata_AVG = ((List<Result>)values.GetType().GetProperties()[alg].GetValue(values));
@@ -144,6 +144,83 @@ namespace AK8MI_SVRCEK
             }
 
 
+        }
+        public static void GenerateComparsionGraphs(ResultInformation sa, ResultInformation rs)
+        {
+            var names = sa.GetType().GetProperties().Select(x => x.Name).ToList();
+            var exporter = new OxyPlot.PdfExporter();
+
+            for (int alg = 0; alg < names.Count; alg++)
+            {
+                Legend legend_AVG = new Legend()
+                {
+                    IsLegendVisible = true,
+                    LegendPlacement = LegendPlacement.Outside,
+                    LegendPosition = LegendPosition.TopCenter,
+                    LegendOrientation = LegendOrientation.Horizontal,
+                    LegendItemAlignment = HorizontalAlignment.Center
+                };
+                var graf = new PlotModel();
+                graf.Legends.Add(legend_AVG);
+                graf.IsLegendVisible = true;
+                graf.Title = "Comparsion_" + names[alg];
+
+
+
+                var resultdata_RS = ((List<Result>)rs.GetType().GetProperties()[alg].GetValue(rs));
+                var rs_y = new List<double>();
+
+                for (int i = 0; i < resultdata_RS[0].AllBestCosts.Count; i++)
+                    rs_y.Add(resultdata_RS.Select(y => y.AllBestCosts[i]).Average());
+
+                var data_RS = new LineSeries
+                {
+                    Color = OxyColors.Blue,
+                    Title = "RS"
+                };
+                for (int i = 0; i < rs_y.Count; i++)
+                {
+                    data_RS.Points.Add(new DataPoint(i, rs_y[i]));
+
+                }
+                graf.Series.Add(data_RS);
+
+
+
+
+
+                var resultdata_SA = ((List<Result>)sa.GetType().GetProperties()[alg].GetValue(sa));
+                var sa_y = new List<double>();
+
+                for (int i = 0; i < resultdata_SA[0].AllBestCosts.Count; i++)
+                    sa_y.Add(resultdata_SA.Select(y => y.AllBestCosts[i]).Average());
+
+                var data_SA = new LineSeries
+                {
+                    Color = OxyColors.Yellow,
+                    Title = "SA"
+                };
+                for (int i = 0; i < sa_y.Count; i++)
+                {
+                    data_SA.Points.Add(new DataPoint(i, sa_y[i]));
+
+                }
+                graf.Series.Add(data_SA);
+
+
+
+
+
+
+                using (var stream = new MemoryStream())
+                {
+                    exporter.Height = 600;
+                    exporter.Width = 800;
+                    exporter.Export(graf, stream);
+
+                    File.WriteAllBytes("grafy\\Comparsion_" + names[alg] + ".pdf", stream.ToArray());
+                }
+            }
         }
     }
 }

@@ -34,7 +34,7 @@ namespace AK8MI_SVRCEK
 
 
 
-        private static Result SA(int FES, int metropoliseIteration, int dimension, Interval interval, int function, double minT = 0.01, double maxT = 1000, double decr = 0.98)
+        private static Result SA(int FES, int metropoliseIteration, int dimension, Interval interval, int function, double minT = 0.01, double maxT = 1000, double decr = 0.98, double nextDiff = 0.1)
         {
             Result retRst = new Result();
             int actualFES = 0;
@@ -48,7 +48,7 @@ namespace AK8MI_SVRCEK
             {
                 for(int i = 0; i < metropoliseIteration && actualFES < FES; i++)
                 {
-                    var tempVector = NextVector(vector, interval);
+                    var tempVector = NextVector(vector, interval, nextDiff);
                     var tempCost = GetCost(tempVector, function);
                     actualFES++;
                     double deltaCost = tempCost - cost;
@@ -98,19 +98,20 @@ namespace AK8MI_SVRCEK
         {
             Random random = new Random(Helper.GetSeed());
             List<double> retLst = new List<double>();
-            for(int i = 0; i< dimension; i++)
+            for(int i = 0; i < dimension; i++)
             {
                 retLst.Add(random.NextDouble() * (interval.To - interval.From) + interval.From);
             }
             return retLst;
         }
 
-        private static List<double> NextVector(List<double> vector, Interval interval)
+        private static List<double> NextVector(List<double> vector, Interval interval, double diff)
         {
             var clone = vector.ToList();
             Random random = new Random(Helper.GetSeed());
             int index = random.Next(0, clone.Count);
-            clone[index] = random.NextDouble() * (interval.To - interval.From) + interval.From;
+            //10% rozsahu...
+            clone[index] = Math.Max(interval.From, Math.Min(interval.To, clone[index] + ((random.NextDouble() * 2 - 1) * (diff * (interval.To - interval.From)))));
             return clone;
         }
     }

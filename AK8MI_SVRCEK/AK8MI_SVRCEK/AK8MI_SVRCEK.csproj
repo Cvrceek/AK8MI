@@ -6,6 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Part1Results\**" />
+    <EmbeddedResource Remove="Part1Results\**" />
+    <None Remove="Part1Results\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="OxyPlot.Core" Version="2.1.2" />
   </ItemGroup>
 

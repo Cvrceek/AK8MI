@@ -11,14 +11,14 @@ namespace AK8MI_SVRCEK
 
 
             Console.WriteLine("Start");
-            var x = RandomSearch.GetResults();
-            var z = SimulatedAnnealing.GetResults();
+            var rs = RandomSearch.GetResults();
+            var sa = SimulatedAnnealing.GetResults();
 
-            Helper.GenerateGraphs(x, "RS");
-            Helper.GenerateGraphs(z, "SA");
+            Helper.GenerateGraphs(rs, "RS");
+            Helper.GenerateGraphs(sa, "SA");
+            Helper.GenerateComparsionGraphs(sa, rs);
 
-            List<double> testpico = new List<double>();
-            var jj = x.DJ1_Dim10.Select(y => y.AllBestCosts[1]).Average();
+
 
 
             Console.WriteLine("end");
