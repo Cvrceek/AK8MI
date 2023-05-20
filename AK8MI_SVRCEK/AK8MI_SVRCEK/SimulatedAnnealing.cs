@@ -34,7 +34,7 @@ namespace AK8MI_SVRCEK
 
 
 
-        private static Result SA(int FES, int metropoliseIteration, int dimension, Interval interval, int function, double minT = 0.01, double maxT = 1000, double decr = 0.98, double nextDiff = 0.1)
+        private static Result SA(int FES, int metropoliseIteration, int dimension, Interval interval, int function, double minT = 0.01, double maxT = 1000, double decr = 0.98, double nextDiff = 0.1, int maxMetropoliseIteration = 100)
         {
             Result retRst = new Result();
             int actualFES = 0;
@@ -69,7 +69,8 @@ namespace AK8MI_SVRCEK
                     retRst.AllBestCosts.Add(cost);
                 }
                 //zvyšování skrz přednáška, kde nt ze zvedáá
-                metropoliseIteration++;
+                if (metropoliseIteration < maxMetropoliseIteration)
+                    metropoliseIteration++;
                 //decr * T prednaska
                 actualTemperature = actualTemperature * decr;
             }

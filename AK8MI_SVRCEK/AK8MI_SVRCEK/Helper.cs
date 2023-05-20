@@ -23,7 +23,7 @@ namespace AK8MI_SVRCEK
             int index = (int)Math.Ceiling((double)(values.Count - 1) / 2);
             var sortedItems = values.ToList();
             sortedItems.Sort();
-            
+
             return sortedItems[index];
         }
 
@@ -50,7 +50,7 @@ namespace AK8MI_SVRCEK
         public static void GenerateGraphs(ResultInformation values, string algName)
         {
 
-            var names = values.GetType().GetProperties().Select(x=> x.Name).ToList();
+            var names = values.GetType().GetProperties().Select(x => x.Name).ToList();
             var exporter = new OxyPlot.PdfExporter();
 
             for (int alg = 0; alg < names.Count; alg++)
@@ -95,7 +95,7 @@ namespace AK8MI_SVRCEK
                     exporter.Width = 800;
                     exporter.Export(graf, stream);
 
-                    File.WriteAllBytes("grafy\\" + algName + "_" + names[alg] + ".pdf", stream.ToArray());
+                    File.WriteAllBytes("part1\\grafy\\" + algName + "_" + names[alg] + ".pdf", stream.ToArray());
                 }
                 #endregion
 
@@ -128,7 +128,6 @@ namespace AK8MI_SVRCEK
                 for (int i = 0; i < y.Count; i++)
                 {
                     data_AVG.Points.Add(new DataPoint(i, y[i]));
-
                 }
                 graf_AVG.Series.Add(data_AVG);
                 using (var stream = new MemoryStream())
@@ -137,7 +136,7 @@ namespace AK8MI_SVRCEK
                     exporter.Width = 800;
                     exporter.Export(graf_AVG, stream);
 
-                    File.WriteAllBytes("grafy\\" + algName + "_AVG_" + names[alg] + ".pdf", stream.ToArray());
+                    File.WriteAllBytes("part1\\grafy\\" + algName + "_AVG_" + names[alg] + ".pdf", stream.ToArray());
                 }
                 #endregion
 
@@ -218,8 +217,125 @@ namespace AK8MI_SVRCEK
                     exporter.Width = 800;
                     exporter.Export(graf, stream);
 
-                    File.WriteAllBytes("grafy\\Comparsion_" + names[alg] + ".pdf", stream.ToArray());
+                    File.WriteAllBytes("part1\\grafy\\Comparsion_" + names[alg] + ".pdf", stream.ToArray());
                 }
+            }
+        }
+
+        public static void KSGenerateGraphs(KSResultInformation values)
+        {
+            var names = values.GetType().GetProperties().Select(x => x.Name).ToList();
+            var exporter = new OxyPlot.PdfExporter();
+
+            for (int alg = 0; alg < names.Count; alg++)
+            {
+                #region Iterace
+                Legend legend = new Legend()
+                {
+                    IsLegendVisible = true,
+                    LegendPlacement = LegendPlacement.Outside,
+                    LegendPosition = LegendPosition.TopCenter,
+                    LegendOrientation = LegendOrientation.Horizontal,
+                    LegendItemAlignment = HorizontalAlignment.Center
+                };
+                var graf = new PlotModel();
+                graf.Legends.Add(legend);
+                graf.IsLegendVisible = true;
+                graf.Title = "Knapsack" + "_" + names[alg];
+
+
+                var colors = typeof(OxyColors).GetFields();
+
+                var resultdata = (KSResult)values.GetType().GetProperties()[alg].GetValue(values);
+
+                var data = new LineSeries
+                {
+                    Color = OxyColors.Blue,
+                    Title = "Váha"
+                };
+
+                for (int j = 0; j < resultdata.AllBestCosts.Count; j++)
+                {
+                    data.Points.Add(new DataPoint(j, resultdata.AllBestCosts[j]));
+                }
+                graf.Series.Add(data);
+
+                using (var stream = new MemoryStream())
+                {
+                    exporter.Height = 600;
+                    exporter.Width = 800;
+                    exporter.Export(graf, stream);
+
+                    File.WriteAllBytes("part2\\grafy\\" + "Knapsack" + "_" + names[alg] + ".pdf", stream.ToArray());
+                }
+                graf = null;
+                resultdata = null;
+                #endregion
+            }
+        }
+
+        public static void KSGenerateComparsionGraphs(KSResultInformation values)
+        {
+            var names = values.GetType().GetProperties().Select(x => x.Name).ToList();
+            var exporter = new OxyPlot.PdfExporter();
+            for (int alg = 0; alg < names.Count / 2; alg++)
+            {
+                #region Iterace
+                Legend legend = new Legend()
+                {
+                    IsLegendVisible = true,
+                    LegendPlacement = LegendPlacement.Outside,
+                    LegendPosition = LegendPosition.TopCenter,
+                    LegendOrientation = LegendOrientation.Horizontal,
+                    LegendItemAlignment = HorizontalAlignment.Center
+                };
+                var graf = new PlotModel();
+                graf.Legends.Add(legend);
+                graf.IsLegendVisible = true;
+                graf.Title = "Comparion_Knapsack" + "_" + names[alg] + "_" + names[alg + 3];
+
+
+                var colors = typeof(OxyColors).GetFields();
+
+                var resultdata1 = (KSResult)values.GetType().GetProperties()[alg].GetValue(values);
+                var resultdata2 = (KSResult)values.GetType().GetProperties()[alg + 3].GetValue(values);
+
+                var data = new LineSeries
+                {
+                    Color = OxyColors.Blue,
+                    Title = "Váha BF"
+                };
+
+                for (int j = 0; j < resultdata1.AllBestCosts.Count; j++)
+                {
+                    data.Points.Add(new DataPoint(j, resultdata1.AllBestCosts[j]));
+                }
+                graf.Series.Add(data);
+
+                var data2 = new LineSeries
+                {
+                    Color = OxyColors.Red,
+                    Title = "Váha SA"
+                };
+
+                for (int j = 0; j < resultdata2.AllBestCosts.Count; j++)
+                {
+                    data2.Points.Add(new DataPoint(j, resultdata2.AllBestCosts[j]));
+                }
+                graf.Series.Add(data2);
+
+                using (var stream = new MemoryStream())
+                {
+                    exporter.Height = 600;
+                    exporter.Width = 800;
+                    exporter.Export(graf, stream);
+
+                    File.WriteAllBytes("part2\\grafy\\" + "Comparsion_Knapsack" + "_" + names[alg] + "_" + names[alg + 3] + ".pdf", stream.ToArray());
+                }
+                graf = null;
+                resultdata1 = null;
+                resultdata2 = null;
+                #endregion
             }
         }
     }
