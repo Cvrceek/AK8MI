@@ -391,7 +391,7 @@ namespace AK8MI_SVRCEK
 
         public static void KSGenerateXLSX(KSResultInformation values)
         {
-            var names = values.GetType().GetProperties().Select(x => x.Name).ToList();
+            var names = values.GetType().GetProperties().Select(x => x.Name).Where(x=> !x.Contains("Items")).ToList();
 
             using (var workbook = new XLWorkbook())
             {
@@ -401,6 +401,47 @@ namespace AK8MI_SVRCEK
 
                     var resultdata = (KSResult)values.GetType().GetProperties()[alg].GetValue(values);
                     var resultdata2 = (KSResult)values.GetType().GetProperties()[alg + 3].GetValue(values);
+
+                    worksheet.Cell("A1").Value = "Předměty:";
+                    var cellIndex = 1;
+                    foreach (var item in values.Items1)
+                    {
+                        worksheet.Cell("B" + cellIndex.ToString()).Value = "Cena: " + item.Cost + " / Váha: " + item.Weight;
+                        cellIndex++;
+                    }
+
+                    worksheet.Cell("E1").Value = "BF";
+                    worksheet.Cell("E1").Style.Font.Bold = true;
+                    worksheet.Cell("E2").Value = "BestCost";
+                    worksheet.Cell("E3").Value = "Weight";
+                    worksheet.Cell("E4").Value = "Time";
+                    worksheet.Cell("E5").Value = "Předměty";
+                    worksheet.Cell("F2").Value = resultdata.BestCost;
+                    worksheet.Cell("F3").Value = resultdata.BestArgs.Sum(x=> x.Weight);
+                    worksheet.Cell("F4").Value = resultdata.Time.ToString();
+                    cellIndex = 5;
+                    foreach (var item in resultdata.BestArgs)
+                    {
+                        worksheet.Cell("F" + cellIndex.ToString()).Value = "Cena: " + item.Cost + " / Váha: " + item.Weight;
+                        cellIndex++;
+                    }
+
+                    worksheet.Cell("H1").Value = "SA";
+                    worksheet.Cell("H1").Style.Font.Bold = true;
+                    worksheet.Cell("H2").Value = "BestCost";
+                    worksheet.Cell("H3").Value = "Weight";
+                    worksheet.Cell("H4").Value = "Time";
+                    worksheet.Cell("H5").Value = "Předměty";
+                    worksheet.Cell("I2").Value = resultdata2.BestCost;
+                    worksheet.Cell("I3").Value = resultdata2.BestArgs.Sum(x => x.Weight);
+                    worksheet.Cell("I4").Value = resultdata2.Time.ToString();
+                    cellIndex = 5;
+                    foreach (var item in resultdata2.BestArgs)
+                    {
+                        worksheet.Cell("I" + cellIndex.ToString()).Value = "Cena: " + item.Cost + " / Váha: " + item.Weight;
+                        cellIndex++;
+                    }
+
 
 
                     //worksheet.Cell("A1").Value = "Iterace";
