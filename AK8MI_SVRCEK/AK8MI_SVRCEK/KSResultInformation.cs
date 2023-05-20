@@ -14,5 +14,15 @@ namespace AK8MI_SVRCEK
         public KSResult SA1 { get; set; }
         public KSResult SA2 { get; set; }
         public KSResult SA3 { get; set; }
+        public List<Item> Items1 { get; set; }
+        public List<Item> Items2 { get; set; }
+        public List<Item> Items3 { get; set; }
+
+        public KSResultInformation()
+        {
+            Items1 = new List<Item>();
+            Items2 = new List<Item>();
+            Items3 = new List<Item>();
+        }
     }
 }

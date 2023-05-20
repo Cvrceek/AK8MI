@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using ClosedXML.Excel;
 using OxyPlot;
 using OxyPlot.Legends;
 using OxyPlot.Series;
@@ -40,6 +41,55 @@ namespace AK8MI_SVRCEK
                 rng.GetBytes(seedArray);
 
             return BitConverter.ToInt32(seedArray, 0);
+        }
+
+        public static void GenerateXLSX(ResultInformation values, string algName)
+        {
+            var names = values.GetType().GetProperties().Select(x => x.Name).ToList();
+
+            using (var workbook = new XLWorkbook())
+            {
+                for (int alg = 0; alg < names.Count; alg++)
+                {
+                    var worksheet = workbook.Worksheets.Add(algName + "_" + names[alg]);
+
+                    var resultdata = ((List<Result>)values.GetType().GetProperties()[alg].GetValue(values));
+
+
+                    worksheet.Cell("A1").Value = "Iterace";
+                    worksheet.Cell("B1").Value = "Cena";
+                    worksheet.Cell("C1").Value = "Vstupy";
+
+                    for (int i = 0; i < resultdata.Count; i++)
+                    {
+                        worksheet.Cell("A" + (i + 2).ToString()).Value = i;
+                        worksheet.Cell("B" + (i + 2).ToString()).Value = resultdata[i].BestCost;
+
+                        int columnIndex = 67;
+                        foreach (var number in resultdata[i].BestArgs)
+                        {
+                            worksheet.Cell((char)columnIndex + (i + 2).ToString()).Value = number.ToString();
+                            columnIndex++;
+                        }
+                    }
+
+                    var index = resultdata.Count + 3;
+                    worksheet.Cell("A" + (index).ToString()).Value = "Mean";
+                    worksheet.Cell("A" + (index + 1).ToString()).Value = "Median";
+                    worksheet.Cell("A" + (index + 2).ToString()).Value = "Min";
+                    worksheet.Cell("A" + (index + 3).ToString()).Value = "Max";
+                    worksheet.Cell("A" + (index + 4).ToString()).Value = "StdDev";
+
+                    worksheet.Cell("B" + (index).ToString()).FormulaA1 = "=AVERAGEA(B2:B31)";
+                    worksheet.Cell("B" + (index + 1).ToString()).FormulaA1 = "=MEDIAN(B2:B31)";
+                    worksheet.Cell("B" + (index + 2).ToString()).FormulaA1 = "=MIN(B2:B31)";
+                    worksheet.Cell("B" + (index + 3).ToString()).FormulaA1 = "=MAX(B2:B31)";
+                    worksheet.Cell("B" + (index + 4).ToString()).FormulaA1 = "=STDEVA(B2:B31)";
+
+                }
+                workbook.SaveAs("Part1Files\\statistiky\\" + algName + ".xlsx");
+
+            }
         }
 
         /// <summary>
@@ -224,7 +274,7 @@ namespace AK8MI_SVRCEK
 
         public static void KSGenerateGraphs(KSResultInformation values)
         {
-            var names = values.GetType().GetProperties().Select(x => x.Name).ToList();
+            var names = values.GetType().GetProperties().Select(x => x.Name).Where(x=> !x.Contains("Items")).ToList();
             var exporter = new OxyPlot.PdfExporter();
 
             for (int alg = 0; alg < names.Count; alg++)
@@ -276,7 +326,7 @@ namespace AK8MI_SVRCEK
 
         public static void KSGenerateComparsionGraphs(KSResultInformation values)
         {
-            var names = values.GetType().GetProperties().Select(x => x.Name).ToList();
+            var names = values.GetType().GetProperties().Select(x => x.Name).Where(x=> !x.Contains("Items")).ToList();
             var exporter = new OxyPlot.PdfExporter();
             for (int alg = 0; alg < names.Count / 2; alg++)
             {
@@ -338,5 +388,97 @@ namespace AK8MI_SVRCEK
                 #endregion
             }
         }
+
+        public static void KSGenerateXLSX(KSResultInformation values)
+        {
+            var names = values.GetType().GetProperties().Select(x => x.Name).Where(x=> !x.Contains("Items")).ToList();
+
+            using (var workbook = new XLWorkbook())
+            {
+                for (int alg = 0; alg < names.Count / 2; alg++)
+                {
+                    var worksheet = workbook.Worksheets.Add(names[alg] + " + " + names[alg + 3]);
+
+                    var resultdata = (KSResult)values.GetType().GetProperties()[alg].GetValue(values);
+                    var resultdata2 = (KSResult)values.GetType().GetProperties()[alg + 3].GetValue(values);
+
+                    worksheet.Cell("A1").Value = "Předměty:";
+                    var cellIndex = 1;
+                    foreach (var item in values.Items1)
+                    {
+                        worksheet.Cell("B" + cellIndex.ToString()).Value = "Cena: " + item.Cost + " / Váha: " + item.Weight;
+                        cellIndex++;
+                    }
+
+                    worksheet.Cell("E1").Value = "BF";
+                    worksheet.Cell("E1").Style.Font.Bold = true;
+                    worksheet.Cell("E2").Value = "BestCost";
+                    worksheet.Cell("E3").Value = "Weight";
+                    worksheet.Cell("E4").Value = "Time";
+                    worksheet.Cell("E5").Value = "Předměty";
+                    worksheet.Cell("F2").Value = resultdata.BestCost;
+                    worksheet.Cell("F3").Value = resultdata.BestArgs.Sum(x=> x.Weight);
+                    worksheet.Cell("F4").Value = resultdata.Time.ToString();
+                    cellIndex = 5;
+                    foreach (var item in resultdata.BestArgs)
+                    {
+                        worksheet.Cell("F" + cellIndex.ToString()).Value = "Cena: " + item.Cost + " / Váha: " + item.Weight;
+                        cellIndex++;
+                    }
+
+                    worksheet.Cell("H1").Value = "SA";
+                    worksheet.Cell("H1").Style.Font.Bold = true;
+                    worksheet.Cell("H2").Value = "BestCost";
+                    worksheet.Cell("H3").Value = "Weight";
+                    worksheet.Cell("H4").Value = "Time";
+                    worksheet.Cell("H5").Value = "Předměty";
+                    worksheet.Cell("I2").Value = resultdata2.BestCost;
+                    worksheet.Cell("I3").Value = resultdata2.BestArgs.Sum(x => x.Weight);
+                    worksheet.Cell("I4").Value = resultdata2.Time.ToString();
+                    cellIndex = 5;
+                    foreach (var item in resultdata2.BestArgs)
+                    {
+                        worksheet.Cell("I" + cellIndex.ToString()).Value = "Cena: " + item.Cost + " / Váha: " + item.Weight;
+                        cellIndex++;
+                    }
+
+
+
+                    //worksheet.Cell("A1").Value = "Iterace";
+                    //worksheet.Cell("B1").Value = "Cena";
+                    //worksheet.Cell("C1").Value = "Vstupy";
+
+                    //for (int i = 0; i < resultdata.Count; i++)
+                    //{
+                    //    worksheet.Cell("A" + (i + 2).ToString()).Value = i;
+                    //    worksheet.Cell("B" + (i + 2).ToString()).Value = resultdata[i].BestCost;
+
+                    //    int columnIndex = 67;
+                    //    foreach (var number in resultdata[i].BestArgs)
+                    //    {
+                    //        worksheet.Cell((char)columnIndex + (i + 2).ToString()).Value = number.ToString();
+                    //        columnIndex++;
+                    //    }
+                    //}
+
+                    //var index = resultdata.Count + 3;
+                    //worksheet.Cell("A" + (index).ToString()).Value = "Mean";
+                    //worksheet.Cell("A" + (index + 1).ToString()).Value = "Median";
+                    //worksheet.Cell("A" + (index + 2).ToString()).Value = "Min";
+                    //worksheet.Cell("A" + (index + 3).ToString()).Value = "Max";
+                    //worksheet.Cell("A" + (index + 4).ToString()).Value = "StdDev";
+
+                    //worksheet.Cell("B" + (index).ToString()).FormulaA1 = "=AVERAGEA(B2:B31)";
+                    //worksheet.Cell("B" + (index + 1).ToString()).FormulaA1 = "=MEDIAN(B2:B31)";
+                    //worksheet.Cell("B" + (index + 2).ToString()).FormulaA1 = "=MIN(B2:B31)";
+                    //worksheet.Cell("B" + (index + 3).ToString()).FormulaA1 = "=MAX(B2:B31)";
+                    //worksheet.Cell("B" + (index + 4).ToString()).FormulaA1 = "=STDEVA(B2:B31)";
+
+                }
+                workbook.SaveAs("Part2Files\\statistiky\\KS.xlsx");
+
+            }
+        }
+
     }
 }

@@ -9,15 +9,16 @@ namespace AK8MI_SVRCEK
     {
         static void Main(string[] args)
         {
+
             Directory.CreateDirectory("Part1Files\\grafy");
-            Directory.CreateDirectory("Part1Files\\satistiky");
+            Directory.CreateDirectory("Part1Files\\statistiky");
 
             Directory.CreateDirectory("Part2Files\\grafy");
-            Directory.CreateDirectory("Part2Files\\satistiky");
+            Directory.CreateDirectory("Part2Files\\statistiky");
 
             Console.WriteLine("Pracuji na RS...");
             var rs = RandomSearch.GetResults();
-            
+
             Console.WriteLine("Pracuji na SA...");
             var sa = SimulatedAnnealing.GetResults();
 
@@ -27,6 +28,9 @@ namespace AK8MI_SVRCEK
             Helper.GenerateComparsionGraphs(sa, rs);
 
             Console.WriteLine("Generuji statistiky pro part1...");
+            Helper.GenerateXLSX(rs, "RS");
+            Helper.GenerateXLSX(sa, "SA");
+
 
 
             Console.WriteLine("Pracuji na KS...");
@@ -37,7 +41,7 @@ namespace AK8MI_SVRCEK
             Helper.KSGenerateComparsionGraphs(ks);
 
             Console.WriteLine("Generuji statistiky pro part2...");
-
+            Helper.KSGenerateXLSX(ks);
 
 
             Console.WriteLine("Jsem hotov...");
