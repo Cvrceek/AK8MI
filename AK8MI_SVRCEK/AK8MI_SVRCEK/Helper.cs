@@ -66,10 +66,10 @@ namespace AK8MI_SVRCEK
                         worksheet.Cell("B" + (i + 2).ToString()).Value = resultdata[i].BestCost;
 
                         int columnIndex = 67;
-                        foreach(var number in resultdata[i].BestArgs)
+                        foreach (var number in resultdata[i].BestArgs)
                         {
-                            worksheet.Cell((char)columnIndex + (i+2).ToString()).Value = number.ToString();
-                            columnIndex++; 
+                            worksheet.Cell((char)columnIndex + (i + 2).ToString()).Value = number.ToString();
+                            columnIndex++;
                         }
                     }
 
@@ -90,11 +90,7 @@ namespace AK8MI_SVRCEK
                 workbook.SaveAs("Part1Files\\statistiky\\" + algName + ".xlsx");
 
             }
-
-
-
         }
-
 
         /// <summary>
         /// generovaní grafů, pro každý alg zvlášť... 
@@ -278,7 +274,7 @@ namespace AK8MI_SVRCEK
 
         public static void KSGenerateGraphs(KSResultInformation values)
         {
-            var names = values.GetType().GetProperties().Select(x => x.Name).ToList();
+            var names = values.GetType().GetProperties().Select(x => x.Name).Where(x=> !x.Contains("Items")).ToList();
             var exporter = new OxyPlot.PdfExporter();
 
             for (int alg = 0; alg < names.Count; alg++)
@@ -330,7 +326,7 @@ namespace AK8MI_SVRCEK
 
         public static void KSGenerateComparsionGraphs(KSResultInformation values)
         {
-            var names = values.GetType().GetProperties().Select(x => x.Name).ToList();
+            var names = values.GetType().GetProperties().Select(x => x.Name).Where(x=> !x.Contains("Items")).ToList();
             var exporter = new OxyPlot.PdfExporter();
             for (int alg = 0; alg < names.Count / 2; alg++)
             {
@@ -392,5 +388,56 @@ namespace AK8MI_SVRCEK
                 #endregion
             }
         }
+
+        public static void KSGenerateXLSX(KSResultInformation values)
+        {
+            var names = values.GetType().GetProperties().Select(x => x.Name).ToList();
+
+            using (var workbook = new XLWorkbook())
+            {
+                for (int alg = 0; alg < names.Count / 2; alg++)
+                {
+                    var worksheet = workbook.Worksheets.Add(names[alg] + " + " + names[alg + 3]);
+
+                    var resultdata = (KSResult)values.GetType().GetProperties()[alg].GetValue(values);
+                    var resultdata2 = (KSResult)values.GetType().GetProperties()[alg + 3].GetValue(values);
+
+
+                    //worksheet.Cell("A1").Value = "Iterace";
+                    //worksheet.Cell("B1").Value = "Cena";
+                    //worksheet.Cell("C1").Value = "Vstupy";
+
+                    //for (int i = 0; i < resultdata.Count; i++)
+                    //{
+                    //    worksheet.Cell("A" + (i + 2).ToString()).Value = i;
+                    //    worksheet.Cell("B" + (i + 2).ToString()).Value = resultdata[i].BestCost;
+
+                    //    int columnIndex = 67;
+                    //    foreach (var number in resultdata[i].BestArgs)
+                    //    {
+                    //        worksheet.Cell((char)columnIndex + (i + 2).ToString()).Value = number.ToString();
+                    //        columnIndex++;
+                    //    }
+                    //}
+
+                    //var index = resultdata.Count + 3;
+                    //worksheet.Cell("A" + (index).ToString()).Value = "Mean";
+                    //worksheet.Cell("A" + (index + 1).ToString()).Value = "Median";
+                    //worksheet.Cell("A" + (index + 2).ToString()).Value = "Min";
+                    //worksheet.Cell("A" + (index + 3).ToString()).Value = "Max";
+                    //worksheet.Cell("A" + (index + 4).ToString()).Value = "StdDev";
+
+                    //worksheet.Cell("B" + (index).ToString()).FormulaA1 = "=AVERAGEA(B2:B31)";
+                    //worksheet.Cell("B" + (index + 1).ToString()).FormulaA1 = "=MEDIAN(B2:B31)";
+                    //worksheet.Cell("B" + (index + 2).ToString()).FormulaA1 = "=MIN(B2:B31)";
+                    //worksheet.Cell("B" + (index + 3).ToString()).FormulaA1 = "=MAX(B2:B31)";
+                    //worksheet.Cell("B" + (index + 4).ToString()).FormulaA1 = "=STDEVA(B2:B31)";
+
+                }
+                workbook.SaveAs("Part2Files\\statistiky\\KS.xlsx");
+
+            }
+        }
+
     }
 }

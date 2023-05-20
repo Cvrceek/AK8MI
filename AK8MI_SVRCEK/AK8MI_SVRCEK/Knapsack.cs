@@ -16,17 +16,17 @@ namespace AK8MI_SVRCEK
         {
             KSResultInformation retVal = new KSResultInformation();
             Random random = new Random(Helper.GetSeed());
-            var items1 = GenerateItems(random.Next(10, 15));
-            var items2 = GenerateItems(random.Next(16, 30));
-            var items3 = GenerateItems(random.Next(31, 40));
+            retVal.Items1 = GenerateItems(random.Next(10, 15));
+            retVal.Items2 = GenerateItems(random.Next(16, 30));
+            retVal.Items3 = GenerateItems(random.Next(31, 40));
 
-            retVal.BF1 = BruteForce(items1);
-            retVal.BF2 = BruteForce(items2);
-            retVal.BF3 = BruteForce(items3);
+            retVal.BF1 = BruteForce(retVal.Items1);
+            retVal.BF2 = BruteForce(retVal.Items2);
+            retVal.BF3 = BruteForce(retVal.Items3);
 
-            retVal.SA1 = SA(items1, retVal.BF1.AllBestCosts.Count, 10);
-            retVal.SA2 = SA(items2, retVal.BF2.AllBestCosts.Count, 10);
-            retVal.SA3 = SA(items3, retVal.BF3.AllBestCosts.Count, 10);
+            retVal.SA1 = SA(retVal.Items1, retVal.BF1.AllBestCosts.Count, 10);
+            retVal.SA2 = SA(retVal.Items2, retVal.BF2.AllBestCosts.Count, 10);
+            retVal.SA3 = SA(retVal.Items3, retVal.BF3.AllBestCosts.Count, 10);
 
             return retVal;
         }
