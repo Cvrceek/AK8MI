@@ -16,4 +16,5 @@
     <PackageReference Include="OxyPlot.Core" Version="2.1.2" />
   </ItemGroup>
 
+
 </Project>
