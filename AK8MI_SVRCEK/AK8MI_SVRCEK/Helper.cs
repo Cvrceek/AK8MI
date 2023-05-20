@@ -95,7 +95,7 @@ namespace AK8MI_SVRCEK
                     exporter.Width = 800;
                     exporter.Export(graf, stream);
 
-                    File.WriteAllBytes("part1\\grafy\\" + algName + "_" + names[alg] + ".pdf", stream.ToArray());
+                    File.WriteAllBytes("Part1Files\\grafy\\" + algName + "_" + names[alg] + ".pdf", stream.ToArray());
                 }
                 #endregion
 
@@ -136,7 +136,7 @@ namespace AK8MI_SVRCEK
                     exporter.Width = 800;
                     exporter.Export(graf_AVG, stream);
 
-                    File.WriteAllBytes("part1\\grafy\\" + algName + "_AVG_" + names[alg] + ".pdf", stream.ToArray());
+                    File.WriteAllBytes("Part1Files\\grafy\\" + algName + "_AVG_" + names[alg] + ".pdf", stream.ToArray());
                 }
                 #endregion
 
@@ -217,7 +217,7 @@ namespace AK8MI_SVRCEK
                     exporter.Width = 800;
                     exporter.Export(graf, stream);
 
-                    File.WriteAllBytes("part1\\grafy\\Comparsion_" + names[alg] + ".pdf", stream.ToArray());
+                    File.WriteAllBytes("Part1Files\\grafy\\Comparsion_" + names[alg] + ".pdf", stream.ToArray());
                 }
             }
         }
@@ -266,7 +266,7 @@ namespace AK8MI_SVRCEK
                     exporter.Width = 800;
                     exporter.Export(graf, stream);
 
-                    File.WriteAllBytes("part2\\grafy\\" + "Knapsack" + "_" + names[alg] + ".pdf", stream.ToArray());
+                    File.WriteAllBytes("Part2Files\\grafy\\" + "Knapsack" + "_" + names[alg] + ".pdf", stream.ToArray());
                 }
                 graf = null;
                 resultdata = null;
@@ -330,7 +330,7 @@ namespace AK8MI_SVRCEK
                     exporter.Width = 800;
                     exporter.Export(graf, stream);
 
-                    File.WriteAllBytes("part2\\grafy\\" + "Comparsion_Knapsack" + "_" + names[alg] + "_" + names[alg + 3] + ".pdf", stream.ToArray());
+                    File.WriteAllBytes("Part2Files\\grafy\\" + "Comparsion_Knapsack" + "_" + names[alg] + "_" + names[alg + 3] + ".pdf", stream.ToArray());
                 }
                 graf = null;
                 resultdata1 = null;

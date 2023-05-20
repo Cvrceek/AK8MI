@@ -9,11 +9,11 @@ namespace AK8MI_SVRCEK
     {
         static void Main(string[] args)
         {
-            Directory.CreateDirectory("part1\\grafy");
-            Directory.CreateDirectory("part1\\satistiky");
+            Directory.CreateDirectory("Part1Files\\grafy");
+            Directory.CreateDirectory("Part1Files\\satistiky");
 
-            Directory.CreateDirectory("part2\\grafy");
-            Directory.CreateDirectory("part2\\satistiky");
+            Directory.CreateDirectory("Part2Files\\grafy");
+            Directory.CreateDirectory("Part2Files\\satistiky");
 
             Console.WriteLine("Pracuji na RS...");
             var rs = RandomSearch.GetResults();
