@@ -8,8 +8,8 @@ namespace AK8MI_SVRCEK
     {
         static void Main(string[] args)
         {
-            var bfks = Knapsack.BruteForce(Knapsack.GenerateItems(50));
-
+            var bfks = Knapsack.BruteForce(Knapsack.GenerateItems(500));
+            var saks = Knapsack.SA(Knapsack.GenerateItems(500), 10000, 100, 300);
 
 
 
